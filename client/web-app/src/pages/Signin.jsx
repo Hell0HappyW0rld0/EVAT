@@ -64,8 +64,10 @@ function Signin() {
       const data = await response.json();
       if (response.ok) {
         // Extract access token from possibly nested structure
-        const accessToken =
-          data?.data?.accessToken?.accessToken || data?.data?.accessToken;
+        const tokenData = data?.data?.accessToken;
+        const accessToken = tokenData?.accessToken || tokenData;
+        const refreshToken =
+          tokenData?.refreshToken || data?.data?.refreshToken;
 
         if (!accessToken) {
           setError('Login succeeded but no access token was returned.');
@@ -88,7 +90,7 @@ function Signin() {
                     `${data?.data?.user?.firstName || ''} ${data?.data?.user?.lastName || ''}`.trim(),
           mobile: data?.data?.user?.mobile,
           token: accessToken,
-          refreshToken: data?.data?.refreshToken,
+          refreshToken,
           createdAt: data?.data?.user?.createdAt,
           avatarURL: profileData?.data?.avatarURL,
         };
@@ -139,7 +141,10 @@ function Signin() {
             console.log("JWT login response:", data);
             if (data.data?.accessToken) {
                 parsedUser.token = data.data.accessToken;
-                // update accessToken if it had to be updated
+                if (data.data?.refreshToken) {
+                    parsedUser.refreshToken = data.data.refreshToken;
+                }
+                // update both rotated tokens if the access token had to be renewed
                 localStorage.setItem("currentUser", JSON.stringify(parsedUser));
                 // redirect to map
                 navigate("/map");

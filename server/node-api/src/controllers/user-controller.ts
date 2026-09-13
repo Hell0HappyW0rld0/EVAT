@@ -78,7 +78,10 @@ export default class UserController {
                 }
 
                 try {
-                    const { accessToken: newAccessToken } =
+                    const {
+                        accessToken: newAccessToken,
+                        refreshToken: newRefreshToken,
+                    } =
                         await this.userService.refreshAccessToken(refreshToken);
 
                     const user = await this.userService.getUserById(decoded.id);
@@ -94,6 +97,7 @@ export default class UserController {
                         data: {
                             user,
                             accessToken: newAccessToken,
+                            refreshToken: newRefreshToken,
                         },
                     });
 
@@ -176,11 +180,13 @@ export default class UserController {
     }
 
     try {
-      const { accessToken } = await this.userService.refreshAccessToken(refreshToken);
+      const { accessToken, refreshToken: newRefreshToken } =
+        await this.userService.refreshAccessToken(refreshToken);
       return res.status(200).json({
         message: "Token refreshed successfully",
         data: {
           accessToken,
+          refreshToken: newRefreshToken,
         },
       });
     } catch (error: any) {

@@ -196,7 +196,8 @@ describe("UserController", () => {
       mockRequest.body = { refreshToken: "valid-refresh-token" };
 
       const mockTokenResponse = {
-        accessToken: "new-access-token"
+        accessToken: "new-access-token",
+        refreshToken: "new-refresh-token"
       };
       mockUserService.refreshAccessToken = jest.fn().mockResolvedValue(mockTokenResponse);
 
@@ -209,7 +210,8 @@ describe("UserController", () => {
       expect(jsonMock).toHaveBeenCalledWith({
         message: "Token refreshed successfully",
         data: {
-          accessToken: "new-access-token"
+          accessToken: "new-access-token",
+          refreshToken: "new-refresh-token"
         }
       });
     });
@@ -493,7 +495,8 @@ describe("UserController", () => {
                 message: "Automatic Login Successful",
                 data: {
                     user: mockUser,
-                    accessToken: "new-access-token"
+                    accessToken: "new-access-token",
+                    refreshToken: "new-refresh-token"
                 }
             });
         });
